@@ -3,7 +3,7 @@
 set -e
 
 BUILDPACKS="https://github.com/cloudfoundry/java-buildpack.git"
-TAKIPI_BUILDPACK="https://github.com/chook/heroku-buildpack-takipi.git"
+TAKIPI_BUILDPACK="https://github.com/chook/cloudfoundry-takipi.git"
 
 function indent() {
   c='s/^/       /'
