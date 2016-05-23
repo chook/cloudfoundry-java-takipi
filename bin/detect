@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "JVM with Takipi"
+exit 0

@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+set -e
+
+BUILDPACKS="https://github.com/cloudfoundry/java-buildpack.git"
+TAKIPI_BUILDPACK="https://github.com/chook/heroku-buildpack-takipi.git"
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+unset GIT_DIR
+
+function handle_buildpack() {
+  BUILDPACK=$3
+  
+  dir=$(mktemp -t buildpackXXXXX)
+  rm -rf $dir
+
+  url=${BUILDPACK%#*}
+  branch=${BUILDPACK#*#}
+
+  if [ "$branch" == "$url" ]; then
+    branch=""
+  fi
+
+  if [ "$url" != "" ]; then
+    echo "=====> Downloading Buildpack: $url"
+
+    if [[ "$url" =~ \.tgz$ ]]; then
+      mkdir -p "$dir"
+      curl -s "$url" | tar xvz -C "$dir" >/dev/null 2>&1
+    else
+      git clone $url $dir >/dev/null 2>&1
+    fi
+
+    cd $dir
+    
+    if [ "$branch" != "" ]; then
+      git checkout $branch >/dev/null 2>&1
+    fi
+
+    chmod +x $dir/bin/{detect,compile,release}
+
+    set +e
+    framework=$($dir/bin/detect $1)
+    exit_code=$?
+    set -e
+    
+    if [ $exit_code == 0 ]; then
+      echo "=====> Detected Framework: $framework"
+      $dir/bin/compile $1 $2
+
+      if [ $? != 0 ]; then
+        exit 1
+      fi
+
+      if [ ! -f $1/last_pack_release.out ]; then
+        $dir/bin/release $1 > $1/last_pack_release.out
+      fi
+
+      return 0 # Found a framework. No need to search more
+    fi
+  fi
+  
+  set +e
+  return 1
+}
+
+should_install_takipi="0"
+
+for BUILDPACK in $BUILDPACKS; do
+  set +e
+  handle_buildpack $1 $2 $BUILDPACK
+  exit_code=$?
+  set -e
+
+  if [ $exit_code == 0 ]; then
+    should_install_takipi="1"
+    break
+  fi
+done
+
+if [ $should_install_takipi == "0" ]; then
+  echo " !     No JVM buildpack was installed. Aborting."
+  exit 1
+else
+  handle_buildpack $1 $2 $TAKIPI_BUILDPACK
+fi

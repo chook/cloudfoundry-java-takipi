@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cat $1/last_pack_release.out
+rm -f $1/last_pack_release.out
