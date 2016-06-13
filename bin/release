@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+echo "Before last_pack_release.out"
 cat $1/last_pack_release.out || /bin/true
 rm -f $1/last_pack_release.out || /bin/true
