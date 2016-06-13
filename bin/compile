@@ -18,6 +18,8 @@ unset GIT_DIR
 function handle_buildpack() {
   BUILDPACK=$3
   
+  echo "Starting handle_buildpack $@"
+  
   dir=$(mktemp -t buildpackXXXXX)
   rm -rf $dir
 
@@ -33,15 +35,15 @@ function handle_buildpack() {
 
     if [[ "$url" =~ \.tgz$ ]]; then
       mkdir -p "$dir"
-      curl -s "$url" | tar xvz -C "$dir" >/dev/null 2>&1
+      curl -s "$url" | tar xvz -C "$dir"
     else
-      git clone $url $dir >/dev/null 2>&1
+      git clone $url $dir 
     fi
 
     cd $dir
     
     if [ "$branch" != "" ]; then
-      git checkout $branch >/dev/null 2>&1
+      git checkout $branch
     fi
 
     chmod +x $dir/bin/{detect,compile,release}
@@ -60,6 +62,7 @@ function handle_buildpack() {
       fi
 
       if [ ! -f $1/last_pack_release.out ]; then
+        echo "about to add $1 to release" 
         $dir/bin/release $1 > $1/last_pack_release.out
       fi
 
