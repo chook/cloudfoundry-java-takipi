@@ -64,6 +64,8 @@ function handle_buildpack() {
       fi
 
       return 0 # Found a framework. No need to search more
+    else
+      echo "=====> problem with detect $framework - exit code $exit_code"
     fi
   fi
   
