@@ -59,6 +59,11 @@ function handle_buildpack() {
         exit 1
       fi
       
+      # check if the buildpack left behind an environment for subsequent ones
+      if [ -e $dir/export ]; then
+        source $dir/export
+      fi
+     
       echo "=====> Compile ended successfully"
       
       if [ ! -f $1/last_pack_release.out ]; then

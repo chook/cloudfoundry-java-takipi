@@ -1,5 +1,7 @@
-#!/usr/bin/env bash
-
-echo "=======>>> In release $1: echo `cat $1/last_pack_release.out`"
-cat $1/last_pack_relea2se.out
-#rm $1/last_pack_release.out
+if [ -e $1/last_pack_relea2se.out ]; then
+  cat $1/last_pack_release.out
+  rm $1/last_pack_release.out
+else
+  echo -e "default_process_types:
+            web:"
+fi
