@@ -2,6 +2,5 @@ if [ -e $1/last_pack_relea2se.out ]; then
   cat $1/last_pack_release.out
   rm $1/last_pack_release.out
 else
-  echo -e "default_process_types:
-            web:"
+  echo -e "default_process_types:\n\tweb: java -version"
 fi
