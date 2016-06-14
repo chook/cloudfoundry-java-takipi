@@ -2,4 +2,4 @@
 
 echo "=======>>> In release $1: echo `cat $1/last_pack_release.out`"
 cat $1/last_pack_release.out
-rm $1/last_pack_release.out
+#rm $1/last_pack_release.out
