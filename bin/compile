@@ -58,9 +58,13 @@ function handle_buildpack() {
       if [ $? != 0 ]; then
         exit 1
       fi
-
+      
+      echo "=====> Compile ended successfully"
+      
       if [ ! -f $1/last_pack_release.out ]; then
+        echo "======> Preparing release with: $dir/bin/release $1"
         $dir/bin/release $1 > $1/last_pack_release.out
+        echo "======>> `cat $1/last_pack_release.out`"
       fi
 
       return 0 # Found a framework. No need to search more
