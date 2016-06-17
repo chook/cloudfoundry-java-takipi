@@ -1,6 +1,4 @@
-if [ -e $1/last_pack_release.out ]; then
-  cat $1/last_pack_release.out
-  rm $1/last_pack_release.out
-else
-  echo -e "--- {}"
-fi
+#!/usr/bin/env bash
+
+cat $1/last_pack_release.out
+rm $1/last_pack_release.out
